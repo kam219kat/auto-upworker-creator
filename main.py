@@ -26,7 +26,7 @@ import re
 root = Tk()  # create parent window
 root.title("Upwork Account Creator")
 root.minsize(200, 200)  # width, height
-root.geometry("215x230+50+50")
+root.geometry("215x330+50+50")
 
 process_flag = False
 totoal_count = 0
@@ -43,10 +43,15 @@ def checkavailable():
         messagebox.showerror('Alert', 'Enter email')
         return
     
+    if profile_input.get() == '':
+        messagebox.showerror('Alert', 'Enter profile')
+        return
+    
     if skill_input.get() == '':
         messagebox.showerror('Alert', 'Enter skills separating by comma')
         return
     
+
     acc_counts = accounts_count.get()
     print("Volume Increase +1")
 
@@ -66,21 +71,22 @@ def checkavailable():
                 index = current_count % csv_data_count
                 csv_data[index]['Email'] = email_input.get()
                 csv_data[index]['Skills'] = skill_input.get()
-                create_account(csv_data[index], profile_input.get())
+                csv_data[index]['Profile_Title'] = profile_input.get()
+                create_account(csv_data[index], bio_input.get())
             except Exception as ex:
                 print(ex, current_count + 1)
                 stat_label_result.config(text="Failed!", fg="red")
             current_count += 1
     process_flag = False
 
-def create_account(person_info, profile):
+def create_account(person_info, bio):
     username = getpass.getuser()
     if username == "root":
         username = "Administrator"
 
     # Connect to a currently opened chrome driver with a remote debugging port
     chrome_options = webdriver.ChromeOptions()
-    chrome_options.add_experimental_option("debuggerAddress", "127.0.0.1:9124")
+    chrome_options.add_experimental_option("debuggerAddress", "127.0.0.1:9241")
     
     driver = webdriver.Chrome(options=chrome_options)
     actions = ActionChains(driver)
@@ -88,7 +94,8 @@ def create_account(person_info, profile):
     
     driver.get("https://www.upwork.com/nx/signup/")
     driver.maximize_window()
-
+    
+    
     try:
         WebDriverWait(driver, 100).until(EC.visibility_of_element_located(
             (By.XPATH, '//*[@id="main"]/div/div/div/div/div/div/div[1]/fieldset/div/div[2]/div/div[1]/label')))
@@ -127,15 +134,9 @@ def create_account(person_info, profile):
     driver.find_element(By.XPATH, '//*[@id="button-submit-form"]').click()
     print('clicked')
     ########################################################### End registration ###########################################################
-
-    try:
-        WebDriverWait(driver, 300).until(
-        EC.visibility_of_element_located((By.XPATH, '//*[@id="main"]//button/span[contains(text(), "Get started")]')))
-        driver.find_element(By.XPATH, '//*[@id="main"]//button/span[contains(text(), "Get started")]').click()
-    except:
-        WebDriverWait(driver, 300).until(
-        EC.visibility_of_element_located((By.XPATH, '//*[@id="main"]//button/span[contains(text(), "Get started")]')))
-        driver.find_element(By.XPATH, '//*[@id="main"]//button/span[contains(text(), "Get started")]').click()
+    messagebox.showinfo("Alert", "Waiting to verify...")
+    WebDriverWait(driver, 30).until(EC.visibility_of_element_located((By.XPATH, '//*[@id="main"]//button/span[contains(text(), "Get started")]')))
+    driver.find_element(By.XPATH, '//*[@id="main"]//button/span[contains(text(), "Get started")]').click()
     print("after get started")
         
     try:
@@ -208,74 +209,62 @@ def create_account(person_info, profile):
     except:
         driver.find_element(By.XPATH, '//button[contains(text(), "create")]').click()
     print('finished 3')
+    time.sleep(2.5)
     ############################################## Step 1/10 How would you like to tell us about yourself? ##############################################
     # Click 'Upload your resume' button
-    try:
-        WebDriverWait(driver, 10).until(
-            EC.visibility_of_element_located((By.XPATH, '/html/body/div[3]/div/div[2]/div/div[1]/div[2]/div/div[1]/div[2]/div[1]/div[1]/button[2]')))
-        driver.find_element(By.XPATH, '/html/body/div[3]/div/div[2]/div/div[1]/div[2]/div/div[1]/div[2]/div[1]/div[1]/button[2]').click()
-    except:
-        WebDriverWait(driver, 10).until(
-            EC.visibility_of_element_located((By.XPATH, '/html/body/div[3]/div/div[2]/div/div[1]/div[2]/div/div[1]/div[2]/div[1]/div[1]/button[2]')))
-        driver.find_element(By.XPATH, '/html/body/div[3]/div/div[2]/div/div[1]/div[2]/div/div[1]/div[2]/div[1]/div[1]/button[2]').click()
     
+    WebDriverWait(driver, 10).until(EC.visibility_of_element_located((By.XPATH, '//button[@data-qa="resume-upload-btn-mobile"]')))
+    driver.find_element(By.XPATH, '//button[@data-qa="resume-upload-btn-mobile"]').click()
+    time.sleep(1.5)    
     # Upload resume
     resume_path = os.path.dirname(os.path.abspath(__file__)) + rf"/resumes/{person_info['Resume']}"
-    try:
-        WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.XPATH, '/html/body/div[6]/div/div[2]/div/div[2]/div[2]/div/div[2]/div/div/div/div/p/span/input')))
-        driver.find_element(By.XPATH, '/html/body/div[6]/div/div[2]/div/div[2]/div[2]/div/div[2]/div/div/div/div/p/span/input').send_keys(resume_path)
-    except:
-        WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.XPATH, '/html/body/div[6]/div/div[2]/div/div[2]/div[2]/div/div[2]/div/div/div/div/p/span/input')))
-        driver.find_element(By.XPATH, '/html/body/div[6]/div/div[2]/div/div[2]/div[2]/div/div[2]/div/div/div/div/p/span/input').send_keys(resume_path)
-
-    time.sleep(3)
+    WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.XPATH, '/html/body/div[6]/div/div[2]/div/div[2]/div[2]/div/div[2]/div/div/div/div/p/span/input')))
+    driver.find_element(By.XPATH, '/html/body/div[6]/div/div[2]/div/div[2]/div[2]/div/div[2]/div/div/div/div/p/span/input').send_keys(resume_path)
+    time.sleep(15)
     # Click 'continue'
     driver.find_element(By.XPATH, '/html/body/div[6]/div/div[2]/div/div[3]/div/button').click()
-    
+    time.sleep(1.5)
     ############################################## Step 1/10 How would you like to tell us about yourself? ##############################################
     ######################################### Step 2/10 Got it. Now, add a title to tell the world what you do.#########################################
-    try:
-        WebDriverWait(driver, 10).until(EC.visibility_of_element_located((By.XPATH, '/html/body/div[3]/div/div[2]/div/div[2]/div[2]/span/button')))
-        driver.find_element(By.XPATH,'/html/body/div[3]/div/div[2]/div/div[2]/div[2]/span/button').click()
-        
-    except:
-        WebDriverWait(driver, 10).until(EC.visibility_of_element_located((By.XPATH, '/html/body/div[3]/div/div[2]/div/div[2]/div[2]/span/button')))
-        driver.find_element(By.XPATH,'/html/body/div[3]/div/div[2]/div/div[2]/div[2]/span/button').click()
-    time.sleep(0.5)
+    WebDriverWait(driver, 10).until(EC.visibility_of_element_located((By.XPATH, '//input[@aria-labelledby="title-label"]')))
+    profile = person_info['Profile_Title']
+    driver.find_element(By.XPATH, '//input[@aria-labelledby="title-label"]').click()
+    actions.key_down(Keys.CONTROL).send_keys('a').key_up(Keys.CONTROL).send_keys(Keys.DELETE).perform()
+    driver.find_element(By.XPATH, '//input[@aria-labelledby="title-label"]').send_keys(profile)
+
+    driver.find_element(By.XPATH,'//button[@data-test="next-button"]').click()
+    time.sleep(3)
     # Next, add your experience
         
     ######################################### Step 2/10 Got it. Now, add a title to tell the world what you do.#########################################
     ######################################### Step 3/10 Here’s what you’ve told us about your experience — any more to add? #########################################
-    try:
-        WebDriverWait(driver, 10).until(EC.visibility_of_element_located((By.XPATH, '/html/body/div[3]/div/div[2]/div/div[1]/div[2]/div/div[3]/div/div[2]/div[1]/div/div[2]/ul/li[1]/div[1]')))
-        driver.find_element(By.XPATH,'/html/body/div[3]/div/div[2]/div/div[2]/div[2]/span/button').click()
+    # try:
+    #     WebDriverWait(driver, 10).until(EC.visibility_of_element_located((By.XPATH, '/html/body/div[3]/div/div[2]/div/div[1]/div[2]/div/div[3]/div/div[2]/div[1]/div/div[2]/ul/li[1]/div[1]')))
+    #     driver.find_element(By.XPATH,'/html/body/div[3]/div/div[2]/div/div[2]/div[2]/span/button').click()
         
-    except:
-        WebDriverWait(driver, 10).until(EC.visibility_of_element_located((By.XPATH, '/html/body/div[3]/div/div[2]/div/div[1]/div[2]/div/div[3]/div/div[2]/div[1]/div/div[2]/ul/li[1]/div[1]')))
-        driver.find_element(By.XPATH,'/html/body/div[3]/div/div[2]/div/div[2]/div[2]/span/button').click()
-    time.sleep(0.5)
+    # except:
+    #     WebDriverWait(driver, 10).until(EC.visibility_of_element_located((By.XPATH, '/html/body/div[3]/div/div[2]/div/div[1]/div[2]/div/div[3]/div/div[2]/div[1]/div/div[2]/ul/li[1]/div[1]')))
+    #     driver.find_element(By.XPATH,'/html/body/div[3]/div/div[2]/div/div[2]/div[2]/span/button').click()
+    driver.find_element(By.XPATH,'//button[@data-test="next-button"]').click()
+    time.sleep(3.5)
     ######################################### Step 3/10 Here’s what you’ve told us about your experience — any more to add? #########################################
 
     ######################################### Step 4/10 And here’s what we picked up on your education – is it right? #########################################
-    try:
-        WebDriverWait(driver, 10).until(EC.visibility_of_element_located((By.XPATH, '/html/body/div[3]/div/div[2]/div/div[1]/div[2]/div/div[4]/div/div[2]/div[1]/div/div[2]/ul/li[1]/div[1]')))
-        driver.find_element(By.XPATH,'/html/body/div[3]/div/div[2]/div/div[2]/div[2]/span/button').click()
+    # try:
+    #     WebDriverWait(driver, 10).until(EC.visibility_of_element_located((By.XPATH, '/html/body/div[3]/div/div[2]/div/div[1]/div[2]/div/div[4]/div/div[2]/div[1]/div/div[2]/ul/li[2]/div[1]/div[1]/svg/path[11]')))
+    #     driver.find_element(By.XPATH,'/html/body/div[3]/div/div[2]/div/div[2]/div[2]/span/button').click()
         
-    except:
-        WebDriverWait(driver, 10).until(EC.visibility_of_element_located((By.XPATH, '/html/body/div[3]/div/div[2]/div/div[1]/div[2]/div/div[4]/div/div[2]/div[1]/div/div[2]/ul/li[1]/div[1]')))
-        driver.find_element(By.XPATH,'/html/body/div[3]/div/div[2]/div/div[2]/div[2]/span/button').click()
-    time.sleep(0.5)
+    # except:
+    #     WebDriverWait(driver, 10).until(EC.visibility_of_element_located((By.XPATH, '/html/body/div[3]/div/div[2]/div/div[1]/div[2]/div/div[4]/div/div[2]/div[1]/div/div[2]/ul/li[2]/div[1]/div[1]/svg/path[11]')))
+    driver.find_element(By.XPATH,'//button[@data-test="next-button"]').click()
+    time.sleep(3)
     ######################################### Step 4/10 And here’s what we picked up on your education – is it right? #########################################
 
     ######################################### Start Step 5/10 Looking good. Next, tell us which languages you speak. #########################################
-    try:
-        WebDriverWait(driver, 10).until(EC.visibility_of_element_located((By.XPATH, '/html/body/div[3]/div/div[2]/div/div[1]/div[2]/div/div[5]/div/div[2]/div/div[2]/div[2]/div/div[1]/div/div/div/div/div/span')))
-        driver.find_element(By.XPATH,'/html/body/div[3]/div/div[2]/div/div[2]/div[2]/span/button').click()
-        
-    except:
-        WebDriverWait(driver, 10).until(EC.visibility_of_element_located((By.XPATH, '/html/body/div[3]/div/div[2]/div/div[1]/div[2]/div/div[5]/div/div[2]/div/div[2]/div[2]/div/div[1]/div/div/div/div/div/span')))
-        driver.find_element(By.XPATH,'/html/body/div[3]/div/div[2]/div/div[2]/div[2]/span/button').click()
-    time.sleep(0.5)
+    
+    WebDriverWait(driver, 10).until(EC.visibility_of_element_located((By.XPATH, '/html/body/div[3]/div/div[2]/div/div[1]/div[2]/div/div[5]/div/div[2]/div/div[2]/div[2]/div/div[1]/div/div/div/div/div/span')))
+    driver.find_element(By.XPATH,'//button[@data-test="next-button"]').click()
+    time.sleep(1.5)
     ######################################### End Step 5/10 Looking good. Next, tell us which languages you speak. #########################################
 
     ######################################### Start Step 6/10 Nearly there! What work are you here to do? #########################################
@@ -283,96 +272,81 @@ def create_account(person_info, profile):
         EC.presence_of_element_located((By.XPATH, '/html/body/div//input[@placeholder="Enter skills here"]')))
     skills = person_info['Skills'].split(',')
     for skill in skills:
-        # time.sleep(1)
+        # time.sleep(1.5)
         driver.find_element(By.XPATH,
                             '/html/body/div//input[@placeholder="Enter skills here"]').click()
-        # time.sleep(1)
+        # time.sleep(1.5)
         driver.find_element(By.XPATH,
                             '/html/body/div//input[@placeholder="Enter skills here"]').send_keys(skill.strip())
         time.sleep(1.5)
         actions.send_keys(Keys.ARROW_DOWN).perform()
         actions.send_keys(Keys.ENTER).perform()
     
-    driver.find_element(By.XPATH,'/html/body/div[3]/div/div[2]/div/div[2]/div[2]/span/button').click()
-    time.sleep(0.5)
+    driver.find_element(By.XPATH,'//button[@data-test="next-button"]').click()
+    time.sleep(1.5)
     ######################################### End Step 6/10 Looking good. Next, tell us which languages you speak. #########################################
 
     ######################################### Start Step 7/10 Great! Now write a bio to tell the world about yourself. #########################################
     WebDriverWait(driver, 10).until(EC.visibility_of_element_located((By.XPATH, '/html/body/div[3]/div/div[2]/div/div[1]/div[2]/div/div[7]/div/div/div[1]/div[2]/div/div/div/textarea')))
-
-    if profile != '':
-        WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.XPATH, '/html/body/div//textarea[@data-test="overview"]')))
-        driver.find_element(By.XPATH, '/html/body/div//textarea[@data-test="overview"]').click()
+    
+    if bio != '':
+        WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.XPATH, '/html/body/div[3]/div/div[2]/div/div[1]/div[2]/div/div[7]/div/div/div[1]/div[2]/div/div/div/textarea')))
+        driver.find_element(By.XPATH, '/html/body/div[3]/div/div[2]/div/div[1]/div[2]/div/div[7]/div/div/div[1]/div[2]/div/div/div/textarea').click()
         actions.key_down(Keys.CONTROL).send_keys('a').key_up(Keys.CONTROL).send_keys(Keys.DELETE).perform()
-        driver.find_element(By.XPATH, '/html/body/div//textarea[@data-test="overview"]').send_keys(profile)
+        driver.find_element(By.XPATH, '/html/body/div[3]/div/div[2]/div/div[1]/div[2]/div/div[7]/div/div/div[1]/div[2]/div/div/div/textarea').send_keys(bio)
 
-    driver.find_element(By.XPATH, '/html/body/div[3]/div/div[2]/div/div[2]/div[2]/span/button').click()    
-    time.sleep(0.5)
+    driver.find_element(By.XPATH,'//button[@data-test="next-button"]').click() 
+    time.sleep(2)
     ######################################### End Step 7/10 Great! Now write a bio to tell the world about yourself. #########################################
 
     ######################################### Start Step 8/10 What are the main services you offer? #########################################
-    try:
-        WebDriverWait(driver, 10).until(EC.visibility_of_element_located((By.XPATH, '/html/body/div[3]/div/div[2]/div/div[1]/div[2]/div/div[8]/div/div[2]/div/div[1]/div/div/div/div/span')))
-        driver.find_element(By.XPATH, '/html/body/div[3]/div/div[2]/div/div[1]/div[2]/div/div[8]/div/div[2]/div/div[2]/button[2]').click()
-        driver.find_element(By.XPATH, '/html/body/div[3]/div/div[2]/div/div[2]/div[2]/span/button').click()
-    except:
-        WebDriverWait(driver, 10).until(EC.visibility_of_element_located((By.XPATH, '/html/body/div[3]/div/div[2]/div/div[1]/div[2]/div/div[8]/div/div[2]/div/div[1]/div/div/div/div/span')))
-        driver.find_element(By.XPATH, '/html/body/div[3]/div/div[2]/div/div[1]/div[2]/div/div[8]/div/div[2]/div/div[2]/button[2]').click()
-        driver.find_element(By.XPATH, '/html/body/div[3]/div/div[2]/div/div[2]/div[2]/span/button').click()
-    time.sleep(0.5)
+    driver.find_element(By.XPATH, '//button[@data-qa="category-add-btn"]').click()
+    driver.find_element(By.XPATH,'//button[@data-test="next-button"]').click()
+    time.sleep(1.5)
     ######################################### End Step 8/10 What are the main services you offer? #########################################
     
     ######################################### Start Step 9/10 Now, let’s set your hourly rate. #########################################
-    try:
-        WebDriverWait(driver, 10).until(EC.visibility_of_element_located((By.XPATH, '/html/body/div[3]/div/div[2]/div/div[1]/div[2]/div/div[9]/div/div[2]/div[1]/div/div[2]/div/div/div/div/input')))
-        driver.find_element(By.XPATH, '/html/body/div[3]/div/div[2]/div/div[1]/div[2]/div/div[9]/div/div[2]/div[1]/div/div[2]/div/div/div/div/input').click()
-        actions.key_down(Keys.CONTROL).send_keys('a').key_up(Keys.CONTROL).send_keys(Keys.DELETE).perform()
-        driver.find_element(By.XPATH, '/html/body/div[3]/div/div[2]/div/div[1]/div[2]/div/div[9]/div/div[2]/div[1]/div/div[2]/div/div/div/div/input').send_keys(35)
-        driver.find_element(By.XPATH, '/html/body/div[3]/div/div[2]/div/div[2]/div[2]/span/button').click()
-    except:
-        WebDriverWait(driver, 10).until(EC.visibility_of_element_located((By.XPATH, '/html/body/div[3]/div/div[2]/div/div[1]/div[2]/div/div[9]/div/div[2]/div[1]/div/div[2]/div/div/div/div/input')))
-        driver.find_element(By.XPATH, '/html/body/div[3]/div/div[2]/div/div[1]/div[2]/div/div[9]/div/div[2]/div[1]/div/div[2]/div/div/div/div/input').click()
-        actions.key_down(Keys.CONTROL).send_keys('a').key_up(Keys.CONTROL).send_keys(Keys.DELETE).perform()
-        driver.find_element(By.XPATH, '/html/body/div[3]/div/div[2]/div/div[1]/div[2]/div/div[9]/div/div[2]/div[1]/div/div[2]/div/div/div/div/input').send_keys(30)
-        driver.find_element(By.XPATH, '/html/body/div[3]/div/div[2]/div/div[2]/div[2]/span/button').click()
-    time.sleep(0.5)
+    WebDriverWait(driver, 10).until(EC.visibility_of_element_located((By.XPATH, '/html/body/div[3]/div/div[2]/div/div[1]/div[2]/div/div[9]/div/div[2]/div[1]/div/div[2]/div/div/div/div/input')))
+    driver.find_element(By.XPATH, '/html/body/div[3]/div/div[2]/div/div[1]/div[2]/div/div[9]/div/div[2]/div[1]/div/div[2]/div/div/div/div/input').click()
+    actions.key_down(Keys.CONTROL).send_keys('a').key_up(Keys.CONTROL).send_keys(Keys.DELETE).perform()
+    driver.find_element(By.XPATH, '/html/body/div[3]/div/div[2]/div/div[1]/div[2]/div/div[9]/div/div[2]/div[1]/div/div[2]/div/div/div/div/input').send_keys(35)
+    driver.find_element(By.XPATH,'//button[@data-test="next-button"]').click()
+    
+    time.sleep(1.5)
     ######################################### End Step 9/10 Now, let’s set your hourly rate. #########################################
 
     ######################################### End Step 10/10 A few last details, then you can check and publish your profile. #########################################
     WebDriverWait(driver, 10).until(
-        EC.presence_of_element_located((By.XPATH, '/html/body/div[3]/div/div[2]/div/div[1]/div[2]/div/div[10]/div/div[2]/div/div[1]/div/div/div/button/img')))
-    driver.find_element(By.XPATH, '/html/body/div[3]/div/div[2]/div/div[1]/div[2]/div/div[10]/div/div[2]/div/div[1]/div/div/div/button/img').click()
+        EC.presence_of_element_located((By.XPATH, '//button[@data-qa="open-loader"]')))
+    driver.find_element(By.XPATH, '//button[@data-qa="open-loader"]').click()
     
     upload_img = os.path.dirname(os.path.abspath(__file__)) + rf"/images/{person_info['Image_Name']}"
     print(upload_img)
     WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.XPATH, '/html/body/div[6]/div/div[2]/div/div[1]/div[2]/div/div[2]/div[1]/div[1]/input')))
     driver.find_element(By.XPATH, '/html/body/div[6]/div/div[2]/div/div[1]/div[2]/div/div[2]/div[1]/div[1]/input').send_keys(upload_img)
-    time.sleep(2)
+    time.sleep(2.5)
     driver.find_element(By.XPATH, '/html/body/div[6]/div/div[2]/div/div[2]/div/button[2]').click()
-    
-    time.sleep(1)
     # // Reant
 
     street = fr"{person_info['Street']}"
-    WebDriverWait(driver, 10).until(
-        EC.presence_of_element_located((By.XPATH, '/html/body/div//input[@aria-labelledby="street-label"]')))
+    WebDriverWait(driver, 30).until(EC.invisibility_of_element_located((By.XPATH, '/html/body/div[6]/div/div[2]/div/div[1]/div[1]/h2')))
     driver.find_element(By.XPATH, '/html/body/div//input[@aria-labelledby="street-label"]').click()
     driver.find_element(By.XPATH, '/html/body/div//input[@aria-labelledby="street-label"]').send_keys(street)
 
     actions.send_keys(Keys.PAGE_DOWN).perform()
-    # time.sleep(1.5)
+    time.sleep(1)
     city = fr"{person_info['City']}"
     driver.find_element(By.XPATH, '/html/body/div//input[@aria-labelledby="city-label"]').click()
     driver.find_element(By.XPATH, '/html/body/div//input[@aria-labelledby="city-label"]').send_keys(city)
-    time.sleep(1.5)
+    time.sleep(2)
     actions.send_keys(Keys.ARROW_DOWN, Keys.ENTER).perform()
 
     phone = person_info['Phone']
-    # time.sleep(1)
+    # time.sleep(1.5)
     driver.find_element(By.XPATH, '/html/body/div//input[@placeholder="Enter number"]').click()
     driver.find_element(By.XPATH, '/html/body/div//input[@placeholder="Enter number"]').send_keys(phone)
 
-    driver.find_element(By.XPATH, '/html/body/div[3]/div/div[2]/div/div[2]/div[2]/span/button').click()
+    driver.find_element(By.XPATH,'//button[@data-test="next-button"]').click()
 
     # Submit
     WebDriverWait(driver, 10).until(EC.visibility_of_element_located((By.XPATH, '/html/body/div[2]/div/div/div/div/main/div/div/div/div[1]/div[2]/div/div/div[1]/div[2]/button')))
@@ -396,23 +370,30 @@ if __name__ == '__main__':
     email_input.grid(row=3)
 
     stat_label = Label(root)
-    stat_label.grid(row=10, column=0)
+    stat_label.grid(row=11, column=0)
 
     stat_label_result = Label(root)
-    stat_label_result.grid(row=10, column=1)
+    stat_label_result.grid(row=11, column=1)
 
-    # Modify Profile
     text = Label(root, text="Profile")
     text.grid(row=4)
     profile_input = Entry(root, bd=5, width=30)
+    profile_input.insert(END, "Professional Data Analyst")
     profile_input.grid(row=5)
 
-    text = Label(root, text="Skills")
+    text = Label(root, text="Bio")
     text.grid(row=6)
+    bio_input = Entry(root, bd=5, width=30)
+    bio_input.insert(END, "Motivated and responsible Data Analyst with significant experience in increasing comprehension of reports and presentations by the average professional. Highly educated, possessing a Bachelor's degree and professional certification in business analytics and statistics.")
+    bio_input.grid(row=7)
+
+    text = Label(root, text="Skills")
+    text.grid(row=8)
     skill_input = Entry(root, bd=5, width=30)
-    skill_input.grid(row=7)
+    skill_input.insert(END, "Data Entry,Communications,Virtual Assistance,Microsoft Office,Google Suite,Internet Survey,Data Management")
+    skill_input.grid(row=9)
 
     modify_btn = Button(root, text="Create", command=checkavailable)
-    modify_btn.grid(row=8)
+    modify_btn.grid(row=10)
     root.mainloop()
 
