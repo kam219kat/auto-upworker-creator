@@ -1,0 +1,43 @@
+,Email,First_Name,Last_Name,Password,Profile_Tile,Country,University,Start_Year,End_Year,Description,Skills,Bio,Image_Name,Street,City,Phone,Work_Title1,Company1,Work_S_Month1,Work_S_Year1,Work_E_Month1,Work_E_Year1,Work_Des1,Work_Title2,Company2,Work_S_Month2,Work_S_Year2,Work_E_Month2,Work_E_Year2,Work_Des2,Work_Title3,Company3,Work_S_Month3,Work_S_Year3,Work_E_Month3,Work_E_Year3,Work_Des3,Resume
+1,keigan.melvin@madeforthat.org,Noah Lee,Kok Soon,mustup123!@#,Full-Stack Software Engineer | Laravel Specialist,Singapore,Nanyang Technological University,2009,2013,,"JavaScript, TypeScript, PHP, Python, Java, C++, Angular, Next.js, Tailwind CSS, Django, Laravel, React Native, Flutter, DevOps, Blockchain","Chen is an enthusiastic, intelligent, productive and proficient Full-Stack Developer specializing in web programming, with additional background in Blockchain technology, Linux system administration.
+He has a good balance between financial knowledge as well as computer science knowledge.
+In the past five years, he has completed a number of Trading platforms exclusively for leading companies, and built a lots of DeFi, DEX and Gambling projects on Ethereum and Tron Blockchain for friendly clients.
+His life motto is to add value in whatever I do.
+His problem solving skills are always out-of-the-box, constantly reaching new highs.
+He enjoys the art of writing clean unit tested code designed to be flexibility.
+He is skilled and familiar with most Python frameworks out there, PHP and JavaScript frameworks for Blockchain
+project and certainly the ones part of the standard API.
+Key technologies include but not limited to:
+? Blockchain Technology
+*building the smart contract on Ether, BSC, Tron, Polygon(Matic)
+*building the smart contract on Solana Blockchain
+*Forking Pancakeswap(V1, V2), GooseDefi, Pantherswap on Binance Smart Chain
+*Forking Uniswap, Sushiswap on Ethereum
+*Forking the Polygaj on Polygon(Matic)
+*building the DeFi and Dex site
+*building the NFT Marketplace
+*Forking the Safemoon, Moonrat on BSC
+? Trading
+* Metatrader, NinjaTrader
+* IG-Markets, Forex, TradingView, AD
+? Website Development
+* Python, Javascript, Typescript, Pinescript, PHP, C, C++, Java
+* Laravel, Django, Flask, CI, MEAN.js
+* Mysql, Sqlite, MongoDB, Oracle, PostgreSQL, GIT
+? Linux System
+* Ubuntu, Debian
+* CentOS, Fedora
+Allow him to show you how he can help you and in return get to learn even more.
+Thank you.",1,Boat Quay Shop Houses 85 Circular Road,Singapore,64385629,Senior Frontend Developer,Credmark Inc,6,2022,12,2022,"• Upgraded its old platform using modern frontend technologies: ChakraUI, TailwindCSS and Next.js
+• Utilized the Node.js, Express and GraphQL to create APIs for both internal and external use reducing the time to ship new frontend features
+• Handled building new React components such as chart for the customer-facing web app which improved the time on page and performance
+• Built extensive test coverage for all new features which reduced the number of customer complaints by 20% using Jest and
+Storybook
+• Worked within an agile team and helped prioritize and scope feature requests to ensure that the biggest impact features were worked on first",Senior Full Stack Developer,Solchicks,5,2021,6,2022,"• Wrote 200+ unit tests to verify the functionality of user interfaces, back-end processing, connectivity, and NoSQL database interactions
+• Utilized Supabase and IPFS for data storage and Kubernetes and Docker for CD/CI pipelines
+• Developed token staking and airdrop API and NFT dashboard using Typescript increasing token holders and TVL by more than $10,000,000
+• Worked closely with the business team to re-configure processing of token auction and staking",Lead Software Engineer,Acceleralia,1,2020,4,2021,"• Analyzed 50+ user requirements to derive technical software design and performance requirements
+• Built online tutoring platform using wordpress and Laravel + vue.js for more than 10,000 students and 10+ universities in Spain
+• Worked with UX/UI design teams to improve existing applications and supported QA team to design test cases for various changes and enhancement
+• Documented 100% of technical specifications and dependencies of application
+• Managed scrum and mentored 2 junior developers",1.pdf
